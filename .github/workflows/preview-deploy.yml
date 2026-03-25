@@ -1,0 +1,67 @@
+name: Preview Deploy to BrandAI
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  build-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        id: build
+        run: |
+          npm run build 2>&1 | tee /tmp/build-output.txt
+          echo "build_exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
+
+      - name: Upload build artifact
+        if: steps.build.outputs.build_exit_code == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+      - name: Notify BrandAI (success)
+        if: steps.build.outputs.build_exit_code == '0'
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+          DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}
+        run: |
+          TIMESTAMP=$(date +%s)
+          BODY="{\"repo\":\"$GITHUB_REPOSITORY\",\"branch\":\"dev\",\"sha\":\"$GITHUB_SHA\",\"run_id\":$GITHUB_RUN_ID,\"status\":\"success\",\"timestamp\":$TIMESTAMP}"
+          SIGNATURE=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "$DEPLOY_SECRET" | awk '{print $2}')
+          curl -s -X POST "$DEPLOY_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-BrandAI-Signature: sha256=$SIGNATURE" \
+            -d "$BODY"
+
+      - name: Notify BrandAI (failure)
+        if: steps.build.outputs.build_exit_code != '0'
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+          DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}
+        run: |
+          ERRORS=$(tail -80 /tmp/build-output.txt | jq -Rs .)
+          TIMESTAMP=$(date +%s)
+          BODY="{\"repo\":\"$GITHUB_REPOSITORY\",\"branch\":\"dev\",\"sha\":\"$GITHUB_SHA\",\"run_id\":$GITHUB_RUN_ID,\"status\":\"failure\",\"errors\":$ERRORS,\"timestamp\":$TIMESTAMP}"
+          SIGNATURE=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "$DEPLOY_SECRET" | awk '{print $2}')
+          curl -s -X POST "$DEPLOY_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-BrandAI-Signature: sha256=$SIGNATURE" \
+            -d "$BODY"
+
+      - name: Fail if build failed
+        if: steps.build.outputs.build_exit_code != '0'
+        run: exit 1
