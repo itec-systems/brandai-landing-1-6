@@ -17,7 +17,7 @@ const Benefits: React.FC = () => {
     {
       icon: <Zap className="w-8 h-8" />,
       title: 'Velocidad extrema',
-      description: 'Genera banners, posts y ads profesionales en menos de 2 minutos. Lo que antes tardaba días, ahora toma segundos.',
+      description: 'Genera banners, posts y ads profesionales en menos de 5 minutos. Lo que antes tardaba días, ahora toma segundos.',
       highlight: '10x más rápido'
     },
     {

@@ -19,9 +19,9 @@ function App() {
       {/* Main Content */}
       <main className="relative z-10">
         <Hero onOpenForm={() => setIsFormOpen(true)} />
-        <Benefits />
-        <HowItWorks />
-        <CasesShowcase />
+        {/* <Benefits /> */}
+        {/* <HowItWorks /> */}
+        {/* <CasesShowcase /> */}
         <FAQ />
         <FinalCTA onOpenForm={() => setIsFormOpen(true)} />
       </main>
