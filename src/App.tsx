@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Benefits from './components/Benefits';
 import HowItWorks from './components/HowItWorks';
@@ -14,6 +15,8 @@ function App() {
   return (
     <div className="min-h-screen bg-white overflow-hidden relative">
       <GeometricBackground />
+      
+      <Navbar onOpenForm={() => setIsFormOpen(true)} />
       
       <section data-section="hero">
         <Hero onOpenForm={() => setIsFormOpen(true)} />
