@@ -41,6 +41,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenForm }) => {
               </Button>
               
               <Button 
+                onClick={onOpenForm}
                 variant="outline" 
                 size="lg"
                 className="border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-200"
