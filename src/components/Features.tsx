@@ -8,7 +8,7 @@ const features = [
     icon: Zap,
     title: 'Rapido y eficiente',
     description:
-      'Resultados al instante con una experiencia optimizada para conversion y rendimiento.',
+      'Resultados al instante con una experiencia optimizada para conversion y rendimiento',
   },
   {
     icon: Target,
