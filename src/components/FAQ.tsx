@@ -12,7 +12,7 @@ const FAQ: React.FC = () => {
     {
       id: 'faq-1',
       question: '¿Qué tan profesional es el contenido que genera la IA?',
-      answer: 'Nuestro contenido es indistinguible del diseño de agencia. La IA está entrenada con más de 100,000 casos de éxito y mantiene los estándares de diseño más altos. Muchas de nuestras PyMEs han incrementado sus conversiones entre 150-300% usando nuestro contenido.'
+      answer: 'Nuestro material es indistinguible del diseño de agencia. La IA está entrenada con más de 100,000 casos de éxito y mantiene los estándares de diseño más altos. Muchas de nuestras PyMEs han incrementado sus conversiones entre 150-300% usando nuestro contenido.'
     },
     {
       id: 'faq-2', 
